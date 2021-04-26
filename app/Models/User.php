@@ -45,6 +45,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class,'user_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
@@ -54,4 +64,15 @@ class User extends Authenticatable
     {
         return $this->roles->contains('name', 'admin');
     }
+
+    public function isOrganization()
+    {
+        return $this->roles->contains('name', 'organization');
+    }
+
+    public function isWriter()
+    {
+        return $this->roles->contains('name', 'writer');
+    }
+
 }

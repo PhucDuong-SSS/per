@@ -39,5 +39,53 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
         });
+        Gate::define('add-user', function (User $user) {
+            if ($user->isSuperAdmin()) {
+                return true;
+            }
+        });
+
+        Gate::define('edit-user', function (User $user, User $userModel) {
+            if ($user->isOrganization() && $user->organization->id === $userModel->organization->id)
+                return true;
+        });
+        Gate::define('delete-user', function (User $user, User $userModel) {
+            if ($user->isOrganization() && $user->organization->id === $userModel->organization->id)
+                return true;
+        });
+
+
+        Gate::define('edit_post', function (User $user, Post $post) {
+            if ($user->id === $post->user_id) return true;
+
+            if ($user->isOrganization() && $post->user->organization->id ==  $user->organization->id) {
+                return true;
+            }
+        });
+
+        Gate::define('delete_post', function (User $user, Post $post) {
+            if ($user->id === $post->user_id) return true;
+
+            if ($user->isOrganization() && $post->user->organization->id ==  $user->organization->id) {
+                return true;
+            }
+        });
+
+        Gate::define('add_post', function (User $user) {
+            if ($user->isOrganization() || $user->isWriter() || $user->isAdmin()) {
+                return true;
+            }
+        });
+
+        Gate::define('edit_organization', function (User $user) {
+            if ($user->isOrganization() || $user->isAdmin()) {
+                return true;
+            }
+        });
+        Gate::define('delete_organization', function (User $user) {
+            if ($user->isOrganization() || $user->isAdmin()) {
+                return true;
+            }
+        });
     }
 }
